@@ -1,48 +1,59 @@
 import { subDays } from 'date-fns'
-import { ChevronRight, ClipboardCheck, Inbox } from 'lucide-react'
+import { ChevronRight, ClipboardCheck, Inbox, ScanQrCode } from 'lucide-react'
 import { Link } from 'react-router'
 import { useCurrentUser } from '../../auth/useCurrentUser'
+import { PpmTaskList } from '../../components/ppm/PpmTaskList'
 import { CATEGORY_ICONS } from '../../components/tickets/categoryIcons'
 import { PriorityBadge, TicketStatusBadge } from '../../components/tickets/TicketBadges'
-import { ComingSoon } from '../../components/ui/ComingSoon'
 import { EmptyState } from '../../components/ui/EmptyState'
+import { buttonClass } from '../../components/ui/styles'
+import { toISODate } from '../../lib/dates'
 import { formatAgo } from '../../lib/format'
+import { getPpmStatus, isTaskMine } from '../../lib/ppm'
 import { sortTicketsForWork, ticketLocation } from '../../lib/tickets'
 import { useAppState } from '../../store/hooks'
 import type { Ticket } from '../../types'
 
-/** Technician home (mobile): work orders assigned to me. PPM tasks join in step 5. */
+/** Technician home (mobile): work orders and PPM tasks assigned to me. */
 export default function MyJobsPage() {
   const user = useCurrentUser()
-  const { tickets, rooms } = useAppState()
+  const { tickets, rooms, ppmTasks } = useAppState()
+  const today = toISODate(new Date())
+  const weekAgo = subDays(new Date(), 7).toISOString()
 
   const mine = tickets.filter((t) => !!user?.technicianId && t.assignedTechnicianId === user.technicianId)
   const todo = mine.filter((t) => t.status !== 'closed').sort(sortTicketsForWork)
-  const weekAgo = subDays(new Date(), 7).toISOString()
-  const doneRecently = mine
-    .filter((t) => t.status === 'closed' && (t.closedAt ?? '') >= weekAgo)
-    .sort((a, b) => (b.closedAt ?? '').localeCompare(a.closedAt ?? ''))
+  const closedTickets = mine.filter((t) => t.status === 'closed' && (t.closedAt ?? '') >= weekAgo)
+
+  // PPM: everything not done, plus anything due in the next 7 days; overdue first.
+  const myPpm = ppmTasks.filter((t) => isTaskMine(user, t))
+  const nextWeek = toISODate(subDays(new Date(), -7))
+  const ppmTodo = myPpm
+    .filter((t) => !t.completion && t.dueDate <= nextWeek)
+    .sort((a, b) => a.dueDate.localeCompare(b.dueDate))
+  const ppmOverdue = ppmTodo.filter((t) => getPpmStatus(t, today) === 'overdue').length
+  const ppmDoneWeek = myPpm.filter((t) => (t.completion?.at ?? '') >= weekAgo).length
 
   return (
     <>
       <h1 className="text-2xl font-bold text-navy-900">My Jobs</h1>
       <p className="mt-1 text-navy-500">Hello {user?.name.split(' ')[0]} — here is what is assigned to you.</p>
 
-      <div className="mt-4 grid grid-cols-2 gap-3">
-        <div className="rounded-xl bg-white p-4 shadow-sm">
-          <p className="text-3xl font-bold text-navy-900">{todo.length}</p>
-          <p className="text-sm text-navy-500">Work orders to do</p>
-        </div>
-        <div className="rounded-xl bg-white p-4 shadow-sm">
-          <p className="text-3xl font-bold text-navy-900">{doneRecently.length}</p>
-          <p className="text-sm text-navy-500">Closed this week</p>
-        </div>
+      <div className="mt-4 grid grid-cols-3 gap-2">
+        <Stat value={todo.length} label="Work orders" />
+        <Stat value={ppmTodo.length} label={ppmOverdue ? `PPM · ${ppmOverdue} overdue` : 'PPM tasks'} alert={ppmOverdue > 0} />
+        <Stat value={closedTickets.length + ppmDoneWeek} label="Done this week" />
       </div>
+
+      <Link to="/ppm/scan" className={buttonClass('teal', 'lg', 'mt-4 w-full')}>
+        <ScanQrCode className="size-5" aria-hidden />
+        Scan an asset QR
+      </Link>
 
       <h2 className="mt-6 mb-2 text-sm font-semibold tracking-wide text-navy-500 uppercase">Work orders</h2>
       {todo.length === 0 ? (
         <div className="rounded-xl bg-white shadow-sm">
-          <EmptyState icon={Inbox} title="Nothing assigned right now" />
+          <EmptyState icon={Inbox} title="No open work orders" />
         </div>
       ) : (
         <ul className="space-y-2">
@@ -53,21 +64,36 @@ export default function MyJobsPage() {
       )}
 
       <h2 className="mt-6 mb-2 flex items-center gap-1.5 text-sm font-semibold tracking-wide text-navy-500 uppercase">
-        <ClipboardCheck className="size-4" aria-hidden /> PPM tasks
+        <ClipboardCheck className="size-4" aria-hidden /> PPM tasks — overdue and next 7 days
       </h2>
-      <ComingSoon step={5} features={['Your planned maintenance tasks and checklists']} />
+      {ppmTodo.length === 0 ? (
+        <div className="rounded-xl bg-white shadow-sm">
+          <EmptyState icon={ClipboardCheck} title="No PPM tasks due" />
+        </div>
+      ) : (
+        <PpmTaskList tasks={ppmTodo} today={today} />
+      )}
 
-      {doneRecently.length > 0 && (
+      {closedTickets.length > 0 && (
         <>
-          <h2 className="mt-6 mb-2 text-sm font-semibold tracking-wide text-navy-500 uppercase">Closed this week</h2>
+          <h2 className="mt-6 mb-2 text-sm font-semibold tracking-wide text-navy-500 uppercase">Work orders closed this week</h2>
           <ul className="space-y-2">
-            {doneRecently.map((t) => (
+            {closedTickets.map((t) => (
               <JobCard key={t.id} ticket={t} location={ticketLocation(t, rooms)} />
             ))}
           </ul>
         </>
       )}
     </>
+  )
+}
+
+function Stat({ value, label, alert = false }: { value: number; label: string; alert?: boolean }) {
+  return (
+    <div className="rounded-xl bg-white p-3 shadow-sm">
+      <p className={alert ? 'text-2xl font-bold text-red-600' : 'text-2xl font-bold text-navy-900'}>{value}</p>
+      <p className="text-xs leading-tight text-navy-500">{label}</p>
+    </div>
   )
 }
 

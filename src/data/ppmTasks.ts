@@ -14,7 +14,7 @@ import type {
 } from '../types'
 import { CHECKLIST_TEMPLATES } from './checklists'
 
-const TITLES: Record<AssetCategory, Partial<Record<PpmFrequency, string>>> = {
+export const PPM_TITLES: Record<AssetCategory, Partial<Record<PpmFrequency, string>>> = {
   chiller: { daily: 'Daily chiller log sheet', monthly: 'Monthly chiller service', quarterly: 'Quarterly chiller inspection' },
   ahu: { monthly: 'Monthly AHU service' },
   pump: { monthly: 'Monthly pump inspection' },
@@ -96,7 +96,7 @@ export function generatePpmTasks({ assets, technicians, users, now, rng }: Input
 
     drafts.push({
       assetId: asset.id,
-      title: TITLES[asset.category][frequency] ?? `${frequency} service`,
+      title: PPM_TITLES[asset.category][frequency] ?? `${frequency} service`,
       frequency,
       dueDate,
       ...(tech ? { assignedTechnicianId: tech.id } : {}),

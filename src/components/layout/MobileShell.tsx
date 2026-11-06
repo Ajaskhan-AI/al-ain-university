@@ -61,6 +61,8 @@ export function MobileShell() {
             <NavLink
               key={path}
               to={path}
+              // "end" = exact match, so /ppm isn't highlighted while on /ppm/scan
+              end={path === '/ppm'}
               className={({ isActive }) =>
                 clsx(
                   'flex flex-1 flex-col items-center gap-0.5 py-2.5 text-xs font-medium',

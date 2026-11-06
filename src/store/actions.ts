@@ -1,5 +1,18 @@
 import { buildSeed } from '../data/seed'
-import type { Actor, CampusFilter, CampusId, Ticket, TicketCategory, TicketPriority, TicketSource } from '../types'
+import type {
+  Actor,
+  Asset,
+  CampusFilter,
+  CampusId,
+  ChecklistResult,
+  PpmCompletion,
+  PpmFrequency,
+  PpmTask,
+  Ticket,
+  TicketCategory,
+  TicketPriority,
+  TicketSource,
+} from '../types'
 import type { AppData } from './state'
 
 /**
@@ -18,6 +31,29 @@ export type Action =
   | { type: 'START_TICKET'; ticketId: string; by: Actor; at: string }
   | { type: 'CLOSE_TICKET'; ticketId: string; remark: string; photoName?: string; by: Actor; at: string }
   | { type: 'ADD_TICKET_NOTE'; ticketId: string; text: string; by: Actor; at: string }
+  // Module 3 — logbook & PPM
+  | { type: 'COMPLETE_PPM_TASK'; taskId: string; completion: PpmCompletion }
+  | { type: 'CREATE_ASSET'; asset: Asset }
+  | { type: 'CREATE_PPM_TASK'; task: PpmTask }
+
+export interface NewPpmTaskInput {
+  /** Task id to use, e.g. formatPpmId(state.counters.ppm). */
+  id: string
+  assetId: string
+  title: string
+  frequency: PpmFrequency
+  dueDate: string
+  assignedTechnicianId?: string
+  source: PpmTask['source']
+  by: Actor
+}
+
+export interface PpmCompletionInput {
+  technicianName: string
+  results: ChecklistResult
+  remarks: string
+  photoName?: string
+}
 
 export interface NewTicketInput {
   /** Ticket number to use, e.g. `WO-${state.counters.ticket}` (so the UI can show it straight away). */
@@ -98,5 +134,27 @@ export const actions = {
   },
   addTicketNote(ticketId: string, text: string, by: Actor): Action {
     return { type: 'ADD_TICKET_NOTE', ticketId, text: text.trim(), by, at: now() }
+  },
+
+  completePpmTask(taskId: string, input: PpmCompletionInput, by: Actor): Action {
+    const completion: PpmCompletion = {
+      by,
+      at: now(),
+      technicianName: input.technicianName.trim(),
+      results: input.results,
+      remarks: input.remarks.trim(),
+      ...(input.photoName ? { photoName: input.photoName } : {}),
+    }
+    return { type: 'COMPLETE_PPM_TASK', taskId, completion }
+  },
+  createAsset(asset: Omit<Asset, 'createdAt'>): Action {
+    return { type: 'CREATE_ASSET', asset: { ...asset, createdAt: now() } }
+  },
+  createPpmTask(input: NewPpmTaskInput): Action {
+    const { id, by, assignedTechnicianId, ...rest } = input
+    return {
+      type: 'CREATE_PPM_TASK',
+      task: { id, ...rest, ...(assignedTechnicianId ? { assignedTechnicianId } : {}), createdAt: now(), createdBy: by },
+    }
   },
 }

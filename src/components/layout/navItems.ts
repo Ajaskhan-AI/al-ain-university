@@ -7,6 +7,7 @@ import {
   FileText,
   LayoutDashboard,
   MessageSquareWarning,
+  ScanQrCode,
   Settings,
   Zap,
   type LucideIcon,
@@ -38,7 +39,7 @@ export const NAV_ITEMS: NavItem[] = [
 /** Bottom tab bar in the technician's mobile layout. */
 export const MOBILE_NAV_ITEMS: NavItem[] = [
   { path: '/my-jobs', label: 'My Jobs', icon: ClipboardList, access: PAGE_ACCESS.myJobs },
+  { path: '/ppm/scan', label: 'Scan QR', icon: ScanQrCode, access: PAGE_ACCESS.ppm },
   { path: '/ppm', label: 'PPM', icon: ClipboardCheck, access: PAGE_ACCESS.ppm },
   { path: '/smdb', label: 'SMDB', icon: Zap, access: PAGE_ACCESS.smdb },
-  { path: '/how-it-works', label: 'How it works', icon: Cpu, access: PAGE_ACCESS.howItWorks },
 ]

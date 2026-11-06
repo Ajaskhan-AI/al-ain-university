@@ -14,7 +14,10 @@ import TicketDetailPage from './pages/complaints/TicketDetailPage'
 import EnergyPage from './pages/energy/EnergyPage'
 import HowItWorksPage from './pages/howItWorks/HowItWorksPage'
 import OverviewPage from './pages/overview/OverviewPage'
+import AssetPage from './pages/ppm/AssetPage'
 import PpmPage from './pages/ppm/PpmPage'
+import ScanPage from './pages/ppm/ScanPage'
+import TaskPage from './pages/ppm/TaskPage'
 import PredictivePage from './pages/predictive/PredictivePage'
 import ReportProblemPage from './pages/public/ReportProblemPage'
 import ReportPage from './pages/report/ReportPage'
@@ -52,6 +55,10 @@ export default function App() {
           <Route path="smdb" element={guard(PAGE_ACCESS.smdb, <SmdbPage />)} />
           <Route path="predictive" element={guard(PAGE_ACCESS.predictive, <PredictivePage />)} />
           <Route path="ppm" element={guard(PAGE_ACCESS.ppm, <PpmPage />)} />
+          <Route path="ppm/scan" element={guard(PAGE_ACCESS.ppm, <ScanPage />)} />
+          <Route path="ppm/assets/:assetId" element={guard(PAGE_ACCESS.ppm, <AssetPage />)} />
+          {/* Technicians may open their own tasks; the page checks ownership itself */}
+          <Route path="ppm/tasks/:taskId" element={guard(PAGE_ACCESS.ppm, <TaskPage />)} />
           <Route path="complaints" element={guard(PAGE_ACCESS.complaints, <ComplaintsPage />)} />
           <Route path="complaints/rooms" element={guard(PAGE_ACCESS.complaints, <RoomQrPage />)} />
           {/* Technicians may open their own tickets; the page checks ownership itself */}

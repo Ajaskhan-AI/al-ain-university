@@ -120,6 +120,32 @@ export function appReducer(state: AppState, action: Action): AppState {
           : { ...ticket, timeline: withEvent(ticket, { type: 'note', at: action.at, by: action.by, note: action.text }) },
       )
 
+    // ---------- Module 3: logbook & PPM ----------
+
+    case 'COMPLETE_PPM_TASK': {
+      let changed = false
+      const ppmTasks = state.ppmTasks.map((task) => {
+        if (task.id !== action.taskId || task.completion) return task
+        changed = true
+        return { ...task, completion: action.completion }
+      })
+      return changed ? { ...state, ppmTasks } : state
+    }
+
+    case 'CREATE_ASSET':
+      if (state.assets.some((a) => a.id === action.asset.id)) return state
+      return { ...state, assets: [...state.assets, action.asset] }
+
+    case 'CREATE_PPM_TASK': {
+      if (state.ppmTasks.some((t) => t.id === action.task.id)) return state
+      const number = Number(action.task.id.replace(/\D/g, ''))
+      return {
+        ...state,
+        ppmTasks: [...state.ppmTasks, action.task],
+        counters: { ...state.counters, ppm: Math.max(state.counters.ppm, number + 1) },
+      }
+    }
+
     default: {
       // If a new action type is added but not handled, TypeScript errors here.
       const unhandled: never = action
