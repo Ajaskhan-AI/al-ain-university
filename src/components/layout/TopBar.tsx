@@ -16,7 +16,7 @@ interface Props {
 
 export function TopBar({ campus, campusLocked, onCampusChange, onOpenMenu, onReset }: Props) {
   return (
-    <header className="sticky top-0 z-20 border-b border-navy-100 bg-white/95 backdrop-blur">
+    <header className="sticky top-0 z-20 border-b border-navy-100 bg-white/95 backdrop-blur print:hidden">
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3 sm:px-6">
         <button
           type="button"

@@ -19,10 +19,10 @@ export function AppShell() {
   const [menuOpen, setMenuOpen] = useState(false)
 
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex h-screen overflow-hidden print:h-auto print:overflow-visible">
       <Sidebar mobileOpen={menuOpen} onClose={() => setMenuOpen(false)} />
 
-      <div className="flex min-w-0 flex-1 flex-col overflow-y-auto">
+      <div className="flex min-w-0 flex-1 flex-col overflow-y-auto print:overflow-visible">
         <TopBar
           campus={campus}
           campusLocked={!!user && user.campus !== 'ALL'}

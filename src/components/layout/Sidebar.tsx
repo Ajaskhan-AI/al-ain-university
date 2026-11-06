@@ -30,7 +30,7 @@ export function Sidebar({ mobileOpen, onClose }: Props) {
 
       <aside
         className={clsx(
-          'fixed inset-y-0 left-0 z-40 flex w-64 flex-col bg-navy-900 text-navy-100 transition-transform lg:static lg:translate-x-0',
+          'fixed inset-y-0 left-0 z-40 flex w-64 flex-col print:hidden bg-navy-900 text-navy-100 transition-transform lg:static lg:translate-x-0',
           mobileOpen ? 'translate-x-0' : '-translate-x-full',
         )}
       >

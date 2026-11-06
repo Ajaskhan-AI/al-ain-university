@@ -9,6 +9,8 @@ import type { Permission } from './types'
 import LoginPage from './pages/LoginPage'
 import NotFoundPage from './pages/NotFoundPage'
 import ComplaintsPage from './pages/complaints/ComplaintsPage'
+import RoomQrPage from './pages/complaints/RoomQrPage'
+import TicketDetailPage from './pages/complaints/TicketDetailPage'
 import EnergyPage from './pages/energy/EnergyPage'
 import HowItWorksPage from './pages/howItWorks/HowItWorksPage'
 import OverviewPage from './pages/overview/OverviewPage'
@@ -51,6 +53,9 @@ export default function App() {
           <Route path="predictive" element={guard(PAGE_ACCESS.predictive, <PredictivePage />)} />
           <Route path="ppm" element={guard(PAGE_ACCESS.ppm, <PpmPage />)} />
           <Route path="complaints" element={guard(PAGE_ACCESS.complaints, <ComplaintsPage />)} />
+          <Route path="complaints/rooms" element={guard(PAGE_ACCESS.complaints, <RoomQrPage />)} />
+          {/* Technicians may open their own tickets; the page checks ownership itself */}
+          <Route path="complaints/:ticketId" element={guard(['tickets.view', 'tickets.viewOwn'], <TicketDetailPage />)} />
           <Route path="energy" element={guard(PAGE_ACCESS.energy, <EnergyPage />)} />
           <Route path="report" element={guard(PAGE_ACCESS.report, <ReportPage />)} />
           <Route path="how-it-works" element={guard(PAGE_ACCESS.howItWorks, <HowItWorksPage />)} />
