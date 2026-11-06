@@ -44,6 +44,8 @@ export type Action =
   | { type: 'ADD_ALERT_NOTE'; alertId: string; text: string; by: Actor; at: string }
   | { type: 'LINK_ALERT_WORK_ORDER'; alertId: string; ticketId: string }
   | { type: 'SET_THRESHOLDS'; smdbId: string; thresholds: SmdbThresholds }
+  // Module 2 — predictive maintenance
+  | { type: 'RESOLVE_PREDICTIVE'; assetId: string; by: Actor; at: string }
 
 export interface NewPpmTaskInput {
   /** Task id to use, e.g. formatPpmId(state.counters.ppm). */
@@ -173,6 +175,10 @@ export const actions = {
   },
   linkAlertWorkOrder(alertId: string, ticketId: string): Action {
     return { type: 'LINK_ALERT_WORK_ORDER', alertId, ticketId }
+  },
+  /** "Mark as resolved": the asset's health resets from now. */
+  resolvePredictive(assetId: string, by: Actor): Action {
+    return { type: 'RESOLVE_PREDICTIVE', assetId, by, at: now() }
   },
   setThresholds(smdbId: string, thresholds: SmdbThresholds): Action {
     return { type: 'SET_THRESHOLDS', smdbId, thresholds }

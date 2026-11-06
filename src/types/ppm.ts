@@ -1,6 +1,7 @@
 import type { Actor } from './user'
 
-export type PpmFrequency = 'daily' | 'weekly' | 'monthly' | 'quarterly'
+/** 'once' = one-off job, e.g. scheduled from Predictive Maintenance. */
+export type PpmFrequency = 'once' | 'daily' | 'weekly' | 'monthly' | 'quarterly'
 
 /** Derived, never stored: done if completed, else overdue/due from the due date. */
 export type PpmStatus = 'done' | 'due' | 'overdue'

@@ -1,6 +1,7 @@
 import { buildSeed } from '../data/seed'
 import type {
   AcademicPeriod,
+  ActionStamp,
   Alert,
   Asset,
   CampusFilter,
@@ -28,6 +29,8 @@ export interface AppData {
   /** Per-SMDB alarm thresholds, keyed by SMDB id. */
   thresholds: Record<string, SmdbThresholds>
   calendar: AcademicPeriod[]
+  /** Predictive maintenance: assets marked resolved (health resets from this moment). */
+  predictiveResets: Record<string, ActionStamp>
   /** Energy waste flags marked "reviewed" in Module 5. */
   reviewedWasteIds: string[]
   /** Next number for new IDs (WO-xxxx, PPM-xxxx, ALT-xxxx). */
@@ -42,7 +45,8 @@ export interface AppState extends AppData {
   campus: CampusFilter
 }
 
-export const STATE_VERSION = 1
+// v2: added predictiveResets (step 8). Older saved data is re-seeded automatically.
+export const STATE_VERSION = 2
 
 export function createInitialState(now: Date): AppState {
   return {

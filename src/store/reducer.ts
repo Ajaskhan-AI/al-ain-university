@@ -196,6 +196,9 @@ export function appReducer(state: AppState, action: Action): AppState {
         alert.id === action.alertId && !alert.workOrderId ? { ...alert, workOrderId: action.ticketId } : null,
       )
 
+    case 'RESOLVE_PREDICTIVE':
+      return { ...state, predictiveResets: { ...state.predictiveResets, [action.assetId]: { by: action.by, at: action.at } } }
+
     case 'SET_THRESHOLDS':
       return { ...state, thresholds: { ...state.thresholds, [action.smdbId]: action.thresholds } }
 

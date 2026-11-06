@@ -18,6 +18,7 @@ import AssetPage from './pages/ppm/AssetPage'
 import PpmPage from './pages/ppm/PpmPage'
 import ScanPage from './pages/ppm/ScanPage'
 import TaskPage from './pages/ppm/TaskPage'
+import PredictiveAssetPage from './pages/predictive/PredictiveAssetPage'
 import PredictivePage from './pages/predictive/PredictivePage'
 import ReportProblemPage from './pages/public/ReportProblemPage'
 import ReportPage from './pages/report/ReportPage'
@@ -59,6 +60,7 @@ export default function App() {
           {/* The page itself checks which boards a technician may open */}
           <Route path="smdb/:smdbId" element={guard(PAGE_ACCESS.smdb, <SmdbDetailPage />)} />
           <Route path="predictive" element={guard(PAGE_ACCESS.predictive, <PredictivePage />)} />
+          <Route path="predictive/:assetId" element={guard(PAGE_ACCESS.predictive, <PredictiveAssetPage />)} />
           <Route path="ppm" element={guard(PAGE_ACCESS.ppm, <PpmPage />)} />
           <Route path="ppm/scan" element={guard(PAGE_ACCESS.ppm, <ScanPage />)} />
           <Route path="ppm/assets/:assetId" element={guard(PAGE_ACCESS.ppm, <AssetPage />)} />

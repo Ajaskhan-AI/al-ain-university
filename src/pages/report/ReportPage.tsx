@@ -222,7 +222,7 @@ export default function ReportPage() {
         )}
 
         {sections.alerts && (
-          <Card title="Alerts & predictive maintenance" subtitle={`${report.alerts.monitoredAssets} CT-monitored assets`}>
+          <Card title="Alerts & predictive maintenance" subtitle={`${report.alerts.monitoredAssets} CT-monitored assets now: ${report.alerts.predictive.ok} OK · ${report.alerts.predictive.watch} watch · ${report.alerts.predictive.alert} alert`}>
             {report.alerts.list.length ? (
               <SimpleTable
                 head={['Date', 'Alert', 'Building', 'Severity']}

@@ -23,8 +23,9 @@ export function getPpmStatus(task: PpmTask, todayISO: string): PpmStatus {
 export const PPM_STATUS_LABELS: Record<PpmStatus, string> = { done: 'Done', due: 'Due', overdue: 'Overdue' }
 export const PPM_STATUS_TONE: Record<PpmStatus, Tone> = { done: 'ok', due: 'warn', overdue: 'alert' }
 
-export const FREQUENCIES: PpmFrequency[] = ['daily', 'weekly', 'monthly', 'quarterly']
+export const FREQUENCIES: PpmFrequency[] = ['once', 'daily', 'weekly', 'monthly', 'quarterly']
 export const FREQUENCY_LABELS: Record<PpmFrequency, string> = {
+  once: 'One-off',
   daily: 'Daily',
   weekly: 'Weekly',
   monthly: 'Monthly',

@@ -190,7 +190,7 @@ export function downloadMonthlyReport(report: MonthlyReport, sections: ReportSec
       { label: 'Alerts', value: String(a.total) },
       { label: 'Critical', value: String(a.critical), color: a.critical ? COLORS.red : COLORS.green },
       { label: 'Acknowledged', value: a.total ? `${Math.round((a.acknowledged / a.total) * 100)}%` : '-', sub: `${a.acknowledged} of ${a.total}` },
-      { label: 'CT-monitored assets', value: String(a.monitoredAssets), sub: 'Chillers, AHUs, pumps' },
+      { label: 'CT-monitored assets', value: String(a.monitoredAssets), sub: `${a.predictive.ok} OK · ${a.predictive.watch} watch · ${a.predictive.alert} alert` },
     ])
     if (a.list.length) {
       y = table(doc, y, {

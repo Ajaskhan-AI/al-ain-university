@@ -17,6 +17,7 @@ import type {
   TicketStatus,
   Asset,
 } from '../types'
+import { assessAll } from '../sim/predictiveModel'
 import { DAY_TYPE_LABELS, resolveDayType } from './calendar'
 import { matchesCampus } from './campus'
 import { kwhToTonnesCo2 } from './co2'
@@ -33,6 +34,7 @@ export interface ReportSource {
   calendar: AcademicPeriod[]
   rooms: Room[]
   technicians: Technician[]
+  predictiveResets: Record<string, { at: string }>
 }
 
 export interface MonthlyReport {
@@ -77,6 +79,8 @@ export interface MonthlyReport {
     workOrders: number
     bySource: Array<{ label: string; count: number }>
     monitoredAssets: number
+    /** Health of monitored assets at the time the report is generated. */
+    predictive: { ok: number; watch: number; alert: number }
     list: Array<{ date: string; title: string; building: string; severity: string; source: string }>
   }
 }
@@ -235,6 +239,10 @@ export function buildMonthlyReport(source: ReportSource, month: string, campus: 
       workOrders: alerts.filter((a) => a.workOrderId).length,
       bySource,
       monitoredAssets: source.assets.filter((a) => a.monitored && matchesCampus(campus, a.campus)).length,
+      predictive: (() => {
+        const list = assessAll(source.assets.filter((a) => matchesCampus(campus, a.campus)), now, source.predictiveResets)
+        return { ok: list.filter((x) => x.status === 'ok').length, watch: list.filter((x) => x.status === 'watch').length, alert: list.filter((x) => x.status === 'alert').length }
+      })(),
       list: alerts
         .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
         .slice(0, 10)

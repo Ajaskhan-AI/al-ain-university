@@ -8,6 +8,7 @@ import { useAppDispatch, useAppState } from '../store/hooks'
 import type { Alert, Reading } from '../types'
 import { SimulatorContext, type SimulatorValue } from './simulatorContext'
 import { boardConstants, buildHistory, computeHealth, expectedKw, makeReading, type FaultType } from './smdbModel'
+import { usePredictive } from './usePredictive'
 
 const INTERVAL_MS = 4000
 /** An alert auto-resolves after its condition has been clear for this many updates (avoids flapping). */
@@ -138,6 +139,48 @@ export function SimulatorProvider({ children }: { children: ReactNode }) {
     }
     if (toResolve.length) dispatch(actions.resolveAlerts(toResolve))
   }, [health, state.alerts, updatedAt, dispatch, toast, canSeeSmdb])
+
+  // ---------- Predictive (Module 2) alert sync ----------
+  // One alert per asset while its health is in "Alert"; resolved when the asset recovers.
+  const assessments = usePredictive()
+  const pendingPredictiveRef = useRef<Set<string>>(new Set())
+  const canSeePredictive = can(user, 'predictive.view')
+
+  useEffect(() => {
+    const open = state.alerts.filter((a) => a.source === 'predictive' && a.code === 'health' && !a.resolvedAt)
+    for (const id of [...pendingPredictiveRef.current]) if (open.some((a) => a.assetId === id)) pendingPredictiveRef.current.delete(id)
+
+    const toRaise: Array<Omit<Alert, 'id'>> = []
+    const toResolve: string[] = []
+    for (const assessment of assessments) {
+      const asset = state.assets.find((a) => a.id === assessment.assetId)
+      if (!asset) continue
+      const existing = open.find((a) => a.assetId === asset.id)
+      if (assessment.status === 'alert' && assessment.issue) {
+        if (existing || pendingPredictiveRef.current.has(asset.id)) continue
+        pendingPredictiveRef.current.add(asset.id)
+        toRaise.push({
+          source: 'predictive',
+          severity: 'critical',
+          title: assessment.issue.title,
+          message: `Health score ${assessment.health}/100 on ${asset.name} (${asset.id}). ${assessment.issue.detail}`,
+          campus: asset.campus,
+          buildingId: asset.buildingId,
+          assetId: asset.id,
+          code: 'health',
+          createdAt: new Date().toISOString(),
+          notes: [],
+        })
+      } else if (existing) {
+        toResolve.push(existing.id)
+      }
+    }
+    if (toRaise.length) {
+      dispatch(actions.raiseAlerts(toRaise))
+      if (canSeePredictive) for (const a of toRaise) toast.show(`Predictive: ${a.title}`, 'alert')
+    }
+    if (toResolve.length) dispatch(actions.resolveAlerts(toResolve))
+  }, [assessments, state.alerts, state.assets, dispatch, toast, canSeePredictive])
 
   // ---------- Demo faults ----------
   const injectFault = useCallback(
