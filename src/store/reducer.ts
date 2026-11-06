@@ -199,6 +199,30 @@ export function appReducer(state: AppState, action: Action): AppState {
     case 'RESOLVE_PREDICTIVE':
       return { ...state, predictiveResets: { ...state.predictiveResets, [action.assetId]: { by: action.by, at: action.at } } }
 
+    // ---------- Module 5: academic calendar & waste review ----------
+
+    case 'SAVE_PERIOD': {
+      const exists = state.calendar.some((p) => p.id === action.period.id)
+      const calendar = exists
+        ? state.calendar.map((p) => (p.id === action.period.id ? action.period : p))
+        : [...state.calendar, action.period]
+      return { ...state, calendar: calendar.sort((a, b) => a.start.localeCompare(b.start)) }
+    }
+
+    case 'DELETE_PERIOD':
+      return { ...state, calendar: state.calendar.filter((p) => p.id !== action.periodId) }
+
+    case 'SET_WASTE_REVIEWED': {
+      const has = state.reviewedWasteIds.includes(action.flagId)
+      if (has === action.reviewed) return state
+      return {
+        ...state,
+        reviewedWasteIds: action.reviewed
+          ? [...state.reviewedWasteIds, action.flagId]
+          : state.reviewedWasteIds.filter((id) => id !== action.flagId),
+      }
+    }
+
     case 'SET_THRESHOLDS':
       return { ...state, thresholds: { ...state.thresholds, [action.smdbId]: action.thresholds } }
 

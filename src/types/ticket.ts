@@ -42,5 +42,7 @@ export interface Ticket {
   closedAt?: string
   closeRemark?: string
   closePhotoName?: string
+  /** Set when raised from an Energy Analytics waste flag (`${buildingId}:${date}`). */
+  energyFlagId?: string
   timeline: TimelineEvent[]
 }

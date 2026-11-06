@@ -1,5 +1,6 @@
 import { buildSeed } from '../data/seed'
 import type {
+  AcademicPeriod,
   Actor,
   Alert,
   Asset,
@@ -46,6 +47,10 @@ export type Action =
   | { type: 'SET_THRESHOLDS'; smdbId: string; thresholds: SmdbThresholds }
   // Module 2 — predictive maintenance
   | { type: 'RESOLVE_PREDICTIVE'; assetId: string; by: Actor; at: string }
+  // Module 5 — academic calendar & waste flags
+  | { type: 'SAVE_PERIOD'; period: AcademicPeriod }
+  | { type: 'DELETE_PERIOD'; periodId: string }
+  | { type: 'SET_WASTE_REVIEWED'; flagId: string; reviewed: boolean }
 
 export interface NewPpmTaskInput {
   /** Task id to use, e.g. formatPpmId(state.counters.ppm). */
@@ -81,6 +86,7 @@ export interface NewTicketInput {
   requesterName?: string
   requesterPhone?: string
   photoName?: string
+  energyFlagId?: string
   by: Actor
 }
 
@@ -121,6 +127,7 @@ export const actions = {
         requesterName: rest.requesterName?.trim(),
         requesterPhone: rest.requesterPhone?.trim(),
         photoName: rest.photoName,
+        energyFlagId: rest.energyFlagId,
       }),
       buildingId: rest.buildingId,
       campus: rest.campus,
@@ -175,6 +182,16 @@ export const actions = {
   },
   linkAlertWorkOrder(alertId: string, ticketId: string): Action {
     return { type: 'LINK_ALERT_WORK_ORDER', alertId, ticketId }
+  },
+  /** Add a new period or update an existing one (matched by id). */
+  savePeriod(period: AcademicPeriod): Action {
+    return { type: 'SAVE_PERIOD', period }
+  },
+  deletePeriod(periodId: string): Action {
+    return { type: 'DELETE_PERIOD', periodId }
+  },
+  setWasteReviewed(flagId: string, reviewed: boolean): Action {
+    return { type: 'SET_WASTE_REVIEWED', flagId, reviewed }
   },
   /** "Mark as resolved": the asset's health resets from now. */
   resolvePredictive(assetId: string, by: Actor): Action {
