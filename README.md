@@ -59,6 +59,9 @@ Use **Switch role** (top right) to jump between users, and **Reset demo data** (
 
 The app uses hash URLs (`/#/page`) and relative asset paths, so `dist/` works on any static host.
 
+- **Vercel** — <https://vercel.com/new> → import `Ajaskhan-AI/al-ain-university` → Deploy. Settings come from
+  `vercel.json` (Vite, `npm run build`, output `dist`). Every push to `main` redeploys automatically.
+  No rewrites are needed because of the hash URLs.
 - **Netlify** — connect the repo (settings come from `netlify.toml`) or drag `dist/` onto <https://app.netlify.com/drop>.
 - **GitHub Pages** — in the repo: *Settings → Pages → Source: GitHub Actions*, then run the
   *Deploy to GitHub Pages* workflow from the *Actions* tab (`.github/workflows/deploy-pages.yml`).
