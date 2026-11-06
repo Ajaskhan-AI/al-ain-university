@@ -1,4 +1,4 @@
-import { Menu } from 'lucide-react'
+import { Menu, RotateCcw } from 'lucide-react'
 import type { CampusFilter } from '../../types'
 import { CampusSwitcher } from './CampusSwitcher'
 import { SampleBadge } from './SampleBadge'
@@ -7,9 +7,11 @@ interface Props {
   campus: CampusFilter
   onCampusChange: (value: CampusFilter) => void
   onOpenMenu: () => void
+  /** Presenter control: restore the original sample data. */
+  onReset: () => void
 }
 
-export function TopBar({ campus, onCampusChange, onOpenMenu }: Props) {
+export function TopBar({ campus, onCampusChange, onOpenMenu, onReset }: Props) {
   return (
     <header className="sticky top-0 z-20 border-b border-navy-100 bg-white/95 backdrop-blur">
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3 sm:px-6">
@@ -36,6 +38,15 @@ export function TopBar({ campus, onCampusChange, onOpenMenu }: Props) {
             <SampleBadge />
           </div>
           <CampusSwitcher value={campus} onChange={onCampusChange} />
+          <button
+            type="button"
+            onClick={onReset}
+            title="Reset demo data"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-navy-200 px-3 py-1.5 text-sm font-medium text-navy-600 hover:bg-navy-50"
+          >
+            <RotateCcw className="size-4" aria-hidden />
+            <span className="hidden xl:inline">Reset demo data</span>
+          </button>
         </div>
       </div>
 

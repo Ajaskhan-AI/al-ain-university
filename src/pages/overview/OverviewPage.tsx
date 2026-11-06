@@ -1,5 +1,6 @@
 import { ComingSoon } from '../../components/ui/ComingSoon'
 import { PageHeader } from '../../components/ui/PageHeader'
+import { DemoDataPanel } from './DemoDataPanel'
 
 export default function OverviewPage() {
   return (
@@ -16,6 +17,7 @@ export default function OverviewPage() {
           'Each KPI card links to its module',
         ]}
       />
+      <DemoDataPanel />
     </>
   )
 }

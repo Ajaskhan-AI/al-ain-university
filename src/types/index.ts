@@ -1,2 +1,12 @@
 // Barrel file: import shared types from '../types' instead of individual files.
+export type * from './alert'
+export type * from './asset'
+export type * from './calendar'
 export type * from './campus'
+export type * from './energy'
+export type * from './location'
+export type * from './ppm'
+export type * from './smdb'
+export type * from './technician'
+export type * from './ticket'
+export type * from './user'
