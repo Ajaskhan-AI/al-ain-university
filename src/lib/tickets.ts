@@ -43,6 +43,10 @@ export const PUBLIC_CATEGORIES: TicketCategory[] = ['ac', 'lighting', 'plumbing'
 /** All categories, incl. internal 'electrical' (SMDB alert work orders), for stats and filters. */
 export const CATEGORIES: TicketCategory[] = [...PUBLIC_CATEGORIES, 'electrical']
 
+export const STAFF_STEP_LABELS = ['Reported', 'Assigned', 'In progress', 'Closed']
+/** Friendlier wording for students / staff on the public tracking page. */
+export const REQUESTER_STEP_LABELS = ['Received', 'Technician assigned', 'Being fixed', 'Resolved']
+
 /** Starting priority for a new complaint (staff can change it). */
 export function defaultPriority(category: TicketCategory, room?: Room): TicketPriority {
   if (category === 'ac' && room && (room.type === 'lab' || room.type === 'lecture_hall')) return 'high'

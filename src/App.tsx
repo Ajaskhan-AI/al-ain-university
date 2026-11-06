@@ -24,6 +24,7 @@ const TaskPage = lazy(() => import('./pages/ppm/TaskPage'))
 const PredictiveAssetPage = lazy(() => import('./pages/predictive/PredictiveAssetPage'))
 const PredictivePage = lazy(() => import('./pages/predictive/PredictivePage'))
 const ReportProblemPage = lazy(() => import('./pages/public/ReportProblemPage'))
+const TrackRequestPage = lazy(() => import('./pages/public/TrackRequestPage'))
 const ReportPage = lazy(() => import('./pages/report/ReportPage'))
 const SettingsPage = lazy(() => import('./pages/settings/SettingsPage'))
 const AlertsPage = lazy(() => import('./pages/smdb/AlertsPage'))
@@ -55,6 +56,8 @@ export default function App() {
           {/* Public pages: no login needed */}
           <Route path="login" element={<LoginPage />} />
           <Route path="report/:roomId" element={<ReportProblemPage />} />
+          <Route path="track" element={<TrackRequestPage />} />
+          <Route path="track/:ticketId" element={<TrackRequestPage />} />
   
           {/* Everything else needs a demo login; pages render inside the shell's <Outlet /> */}
           <Route element={<ProtectedLayout />}>

@@ -31,6 +31,11 @@ export function buttonClass(variant: ButtonVariant = 'primary', size: ButtonSize
   )
 }
 
-/** Text inputs, selects and textareas. */
-export const inputClass =
-  'block w-full rounded-lg border border-navy-200 bg-white px-3 py-2 text-navy-900 placeholder:text-navy-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 focus:outline-none'
+const fieldBase =
+  'rounded-lg border border-navy-200 bg-white px-3 py-2 text-navy-900 placeholder:text-navy-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 focus:outline-none'
+
+/** Text inputs, selects and textareas (full width, as in forms). */
+export const inputClass = `block w-full ${fieldBase}`
+
+/** Selects that sit side by side in a toolbar (only as wide as their content). */
+export const inlineSelectClass = `w-auto text-sm ${fieldBase}`

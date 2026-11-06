@@ -8,7 +8,7 @@ import { AlertCard } from '../../components/alerts/AlertCard'
 import { Card } from '../../components/ui/Card'
 import { EmptyState } from '../../components/ui/EmptyState'
 import { PageHeader } from '../../components/ui/PageHeader'
-import { inputClass } from '../../components/ui/styles'
+import { inlineSelectClass } from '../../components/ui/styles'
 import { filterByCampus } from '../../lib/campus'
 import { visibleSmdbs } from '../../lib/smdb'
 import { useAppState } from '../../store/hooks'
@@ -74,7 +74,7 @@ export default function AlertsPage() {
               </button>
             ))}
           </div>
-          <select aria-label="Source" value={source} onChange={(e) => setSource(e.target.value as typeof source)} className={clsx(inputClass, 'w-auto')}>
+          <select aria-label="Source" value={source} onChange={(e) => setSource(e.target.value as typeof source)} className={inlineSelectClass}>
             <option value="all">All sources</option>
             <option value="smdb">SMDB monitoring</option>
             <option value="predictive">Predictive maintenance</option>
