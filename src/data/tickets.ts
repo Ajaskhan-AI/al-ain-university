@@ -23,6 +23,7 @@ export const CATEGORY_TRADE: Record<TicketCategory, Trade> = {
   plumbing: 'plumbing',
   cleaning: 'general',
   other: 'general',
+  electrical: 'electrical',
 }
 
 const DESCRIPTIONS: Record<TicketCategory, string[]> = {
@@ -31,6 +32,7 @@ const DESCRIPTIONS: Record<TicketCategory, string[]> = {
   plumbing: ['Tap leaking continuously', 'Toilet flush not working', 'Sink drain is blocked', 'Water on the floor near the washbasin'],
   cleaning: ['Bins are overflowing', 'Spill on the floor needs cleaning', 'Washroom needs cleaning', 'Dust on desks after maintenance work'],
   other: ['Door lock is jammed', 'Broken chair in the front row', 'Window blind is stuck', 'Power socket not working at a desk'],
+  electrical: ['Breaker tripped on distribution board', 'Panel running hot under load'],
 }
 
 const CLOSE_REMARKS: Record<TicketCategory, string[]> = {
@@ -39,6 +41,7 @@ const CLOSE_REMARKS: Record<TicketCategory, string[]> = {
   plumbing: ['Replaced tap cartridge.', 'Replaced flush valve.', 'Drain cleared with rodding.'],
   cleaning: ['Area cleaned and bins emptied.', 'Washroom cleaned and restocked.'],
   other: ['Lock mechanism lubricated and adjusted.', 'Chair replaced from store.', 'Blind cord replaced.'],
+  electrical: ['Faulty outgoing breaker replaced; load rebalanced.', 'Terminals re-torqued; thermal scan normal.'],
 }
 
 const REQUESTERS = ['Sara (student)', 'Omar (student)', 'Dr. Khalid', 'Ms. Noura (staff)', 'Hassan (student)', 'Lab assistant']

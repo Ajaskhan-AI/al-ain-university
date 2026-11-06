@@ -1,7 +1,8 @@
 import type { CampusId } from './campus'
 import type { Actor } from './user'
 
-export type TicketCategory = 'ac' | 'lighting' | 'plumbing' | 'cleaning' | 'other'
+/** 'electrical' is internal (work orders raised from SMDB alerts); the public form offers the other five. */
+export type TicketCategory = 'ac' | 'lighting' | 'plumbing' | 'cleaning' | 'other' | 'electrical'
 export type TicketStatus = 'open' | 'assigned' | 'in_progress' | 'closed'
 export type TicketPriority = 'low' | 'medium' | 'high'
 

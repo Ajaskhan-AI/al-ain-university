@@ -1,7 +1,9 @@
 import { buildSeed } from '../data/seed'
 import type {
   Actor,
+  Alert,
   Asset,
+  SmdbThresholds,
   CampusFilter,
   CampusId,
   ChecklistResult,
@@ -35,6 +37,13 @@ export type Action =
   | { type: 'COMPLETE_PPM_TASK'; taskId: string; completion: PpmCompletion }
   | { type: 'CREATE_ASSET'; asset: Asset }
   | { type: 'CREATE_PPM_TASK'; task: PpmTask }
+  // Module 1 — SMDB alerts & thresholds (also used by Module 2 alerts)
+  | { type: 'RAISE_ALERTS'; alerts: Array<Omit<Alert, 'id'>> }
+  | { type: 'RESOLVE_ALERTS'; alertIds: string[]; at: string }
+  | { type: 'ACK_ALERT'; alertId: string; by: Actor; at: string }
+  | { type: 'ADD_ALERT_NOTE'; alertId: string; text: string; by: Actor; at: string }
+  | { type: 'LINK_ALERT_WORK_ORDER'; alertId: string; ticketId: string }
+  | { type: 'SET_THRESHOLDS'; smdbId: string; thresholds: SmdbThresholds }
 
 export interface NewPpmTaskInput {
   /** Task id to use, e.g. formatPpmId(state.counters.ppm). */
@@ -149,6 +158,24 @@ export const actions = {
   },
   createAsset(asset: Omit<Asset, 'createdAt'>): Action {
     return { type: 'CREATE_ASSET', asset: { ...asset, createdAt: now() } }
+  },
+  raiseAlerts(alerts: Array<Omit<Alert, 'id'>>): Action {
+    return { type: 'RAISE_ALERTS', alerts }
+  },
+  resolveAlerts(alertIds: string[]): Action {
+    return { type: 'RESOLVE_ALERTS', alertIds, at: now() }
+  },
+  acknowledgeAlert(alertId: string, by: Actor): Action {
+    return { type: 'ACK_ALERT', alertId, by, at: now() }
+  },
+  addAlertNote(alertId: string, text: string, by: Actor): Action {
+    return { type: 'ADD_ALERT_NOTE', alertId, text: text.trim(), by, at: now() }
+  },
+  linkAlertWorkOrder(alertId: string, ticketId: string): Action {
+    return { type: 'LINK_ALERT_WORK_ORDER', alertId, ticketId }
+  },
+  setThresholds(smdbId: string, thresholds: SmdbThresholds): Action {
+    return { type: 'SET_THRESHOLDS', smdbId, thresholds }
   },
   createPpmTask(input: NewPpmTaskInput): Action {
     const { id, by, assignedTechnicianId, ...rest } = input

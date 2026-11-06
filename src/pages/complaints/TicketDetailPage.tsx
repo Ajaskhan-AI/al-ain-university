@@ -149,6 +149,16 @@ export default function TicketDetailPage() {
                 {ticket.requesterPhone && <span className="text-navy-500"> · {ticket.requesterPhone}</span>}
               </Info>
               <Info label="Building">{building?.name ?? ticket.buildingId}</Info>
+              {(ticket.smdbId || ticket.assetId) && (
+                <Info label="Equipment">
+                  <Link
+                    to={ticket.smdbId ? `/smdb/${ticket.smdbId}` : `/ppm/assets/${ticket.assetId}`}
+                    className="font-medium text-teal-700 hover:underline"
+                  >
+                    {ticket.smdbId ?? ticket.assetId}
+                  </Link>
+                </Info>
+              )}
               {ticket.photoName && (
                 <Info label="Photo">
                   <span className="inline-flex items-center gap-1">

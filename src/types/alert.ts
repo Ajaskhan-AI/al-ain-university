@@ -25,5 +25,7 @@ export interface Alert {
   notes: AlertNote[]
   /** Ticket created from this alert ("Create work order"). */
   workOrderId?: string
+  /** Condition that raised it (e.g. 'trip', 'high_load'), so the simulator can auto-resolve it. */
+  code?: string
   resolvedAt?: string
 }

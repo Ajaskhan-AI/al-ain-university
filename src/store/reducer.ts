@@ -1,4 +1,4 @@
-import type { Ticket, TimelineEvent } from '../types'
+import type { Alert, Ticket, TimelineEvent } from '../types'
 import type { Action } from './actions'
 import { STATE_VERSION, type AppState } from './state'
 
@@ -13,6 +13,18 @@ function updateTicket(state: AppState, ticketId: string, update: (ticket: Ticket
     return next
   })
   return changed ? { ...state, tickets } : state
+}
+
+/** Apply `update` to each alert (null = unchanged); returns the same state if nothing changed. */
+function updateAlerts(state: AppState, update: (alert: Alert) => Alert | null): AppState {
+  let changed = false
+  const alerts = state.alerts.map((alert) => {
+    const next = update(alert)
+    if (!next) return alert
+    changed = true
+    return next
+  })
+  return changed ? { ...state, alerts } : state
 }
 
 function withEvent(ticket: Ticket, event: Omit<TimelineEvent, 'id'>): TimelineEvent[] {
@@ -145,6 +157,47 @@ export function appReducer(state: AppState, action: Action): AppState {
         counters: { ...state.counters, ppm: Math.max(state.counters.ppm, number + 1) },
       }
     }
+
+    // ---------- Module 1: alerts & thresholds ----------
+
+    case 'RAISE_ALERTS': {
+      if (action.alerts.length === 0) return state
+      // The reducer hands out the ALT-xxxx numbers, so they never clash.
+      const created = action.alerts.map((alert, i) => ({
+        id: `ALT-${String(state.counters.alert + i).padStart(4, '0')}`,
+        ...alert,
+      }))
+      return {
+        ...state,
+        alerts: [...state.alerts, ...created],
+        counters: { ...state.counters, alert: state.counters.alert + created.length },
+      }
+    }
+
+    case 'RESOLVE_ALERTS':
+      return updateAlerts(state, (alert) =>
+        action.alertIds.includes(alert.id) && !alert.resolvedAt ? { ...alert, resolvedAt: action.at } : null,
+      )
+
+    case 'ACK_ALERT':
+      return updateAlerts(state, (alert) =>
+        alert.id === action.alertId && !alert.acknowledged ? { ...alert, acknowledged: { by: action.by, at: action.at } } : null,
+      )
+
+    case 'ADD_ALERT_NOTE':
+      return updateAlerts(state, (alert) =>
+        alert.id === action.alertId && action.text
+          ? { ...alert, notes: [...alert.notes, { by: action.by, at: action.at, text: action.text }] }
+          : null,
+      )
+
+    case 'LINK_ALERT_WORK_ORDER':
+      return updateAlerts(state, (alert) =>
+        alert.id === action.alertId && !alert.workOrderId ? { ...alert, workOrderId: action.ticketId } : null,
+      )
+
+    case 'SET_THRESHOLDS':
+      return { ...state, thresholds: { ...state.thresholds, [action.smdbId]: action.thresholds } }
 
     default: {
       // If a new action type is added but not handled, TypeScript errors here.

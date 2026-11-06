@@ -19,7 +19,7 @@ import { BUILDINGS } from './buildings'
  */
 
 /** Cooling demand multiplier by month (Jan … Dec) for the UAE climate. */
-const COOLING = [0.75, 0.78, 0.88, 1.0, 1.18, 1.32, 1.42, 1.45, 1.33, 1.15, 0.95, 0.8]
+export const COOLING = [0.75, 0.78, 0.88, 1.0, 1.18, 1.32, 1.42, 1.45, 1.33, 1.15, 0.95, 0.8]
 
 /**
  * Hidden "waste" patterns for Module 5's detector to find: buildings that

@@ -22,6 +22,8 @@ import PredictivePage from './pages/predictive/PredictivePage'
 import ReportProblemPage from './pages/public/ReportProblemPage'
 import ReportPage from './pages/report/ReportPage'
 import SettingsPage from './pages/settings/SettingsPage'
+import AlertsPage from './pages/smdb/AlertsPage'
+import SmdbDetailPage from './pages/smdb/SmdbDetailPage'
 import SmdbPage from './pages/smdb/SmdbPage'
 import MyJobsPage from './pages/technician/MyJobsPage'
 
@@ -53,6 +55,9 @@ export default function App() {
           <Route index element={<HomeRedirect />} />
           <Route path="overview" element={guard(PAGE_ACCESS.overview, <OverviewPage />)} />
           <Route path="smdb" element={guard(PAGE_ACCESS.smdb, <SmdbPage />)} />
+          <Route path="smdb/alerts" element={guard(PAGE_ACCESS.smdb, <AlertsPage />)} />
+          {/* The page itself checks which boards a technician may open */}
+          <Route path="smdb/:smdbId" element={guard(PAGE_ACCESS.smdb, <SmdbDetailPage />)} />
           <Route path="predictive" element={guard(PAGE_ACCESS.predictive, <PredictivePage />)} />
           <Route path="ppm" element={guard(PAGE_ACCESS.ppm, <PpmPage />)} />
           <Route path="ppm/scan" element={guard(PAGE_ACCESS.ppm, <ScanPage />)} />

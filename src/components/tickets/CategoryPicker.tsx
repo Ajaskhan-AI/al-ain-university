@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import { CATEGORIES, CATEGORY_LABELS } from '../../lib/tickets'
+import { CATEGORY_LABELS, PUBLIC_CATEGORIES } from '../../lib/tickets'
 import type { TicketCategory } from '../../types'
 import { CATEGORY_ICONS } from './categoryIcons'
 
@@ -13,7 +13,7 @@ export function CategoryPicker({
 }) {
   return (
     <div role="radiogroup" aria-label="Problem type" className="grid grid-cols-3 gap-2 sm:grid-cols-5">
-      {CATEGORIES.map((category) => {
+      {PUBLIC_CATEGORIES.map((category) => {
         const Icon = CATEGORY_ICONS[category]
         const selected = value === category
         return (

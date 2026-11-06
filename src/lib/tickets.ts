@@ -9,6 +9,7 @@ export const CATEGORY_LABELS: Record<TicketCategory, string> = {
   plumbing: 'Plumbing',
   cleaning: 'Cleaning',
   other: 'Other',
+  electrical: 'Electrical',
 }
 
 export const STATUS_LABELS: Record<TicketStatus, string> = {
@@ -37,7 +38,10 @@ export const SOURCE_LABELS: Record<TicketSource, string> = {
   energy: 'Energy analytics',
 }
 
-export const CATEGORIES: TicketCategory[] = ['ac', 'lighting', 'plumbing', 'cleaning', 'other']
+/** Categories offered on the complaint forms (CLAUDE.md). */
+export const PUBLIC_CATEGORIES: TicketCategory[] = ['ac', 'lighting', 'plumbing', 'cleaning', 'other']
+/** All categories, incl. internal 'electrical' (SMDB alert work orders), for stats and filters. */
+export const CATEGORIES: TicketCategory[] = [...PUBLIC_CATEGORIES, 'electrical']
 
 /** Starting priority for a new complaint (staff can change it). */
 export function defaultPriority(category: TicketCategory, room?: Room): TicketPriority {
