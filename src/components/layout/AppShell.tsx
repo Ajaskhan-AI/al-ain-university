@@ -1,8 +1,9 @@
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
 import { Outlet } from 'react-router'
 import { useCurrentUser } from '../../auth/useCurrentUser'
 import { actions } from '../../store/actions'
 import { useAppDispatch, useAppState } from '../../store/hooks'
+import { PageLoader } from '../ui/PageLoader'
 import { Sidebar } from './Sidebar'
 import { TopBar } from './TopBar'
 import { useResetDemo } from './useResetDemo'
@@ -31,7 +32,9 @@ export function AppShell() {
           onReset={resetDemo}
         />
         <main className="flex-1 px-4 py-6 sm:px-6 lg:px-8">
-          <Outlet />
+          <Suspense fallback={<PageLoader />}>
+            <Outlet />
+          </Suspense>
         </main>
       </div>
     </div>

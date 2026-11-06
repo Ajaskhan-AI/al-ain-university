@@ -13,6 +13,7 @@ export interface SimulatorValue {
   faults: Record<string, FaultType>
   injectFault: (smdbId: string, type: FaultType) => void
   clearFault: (smdbId: string) => void
+  clearAllFaults: () => void
   /** Time of the last update (ms). */
   updatedAt: number
   intervalMs: number

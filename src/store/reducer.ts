@@ -62,6 +62,14 @@ export function appReducer(state: AppState, action: Action): AppState {
       return { ...state, currentUserId: user.id, campus: user.campus }
     }
 
+    case 'SAVE_USER': {
+      const exists = state.users.some((u) => u.id === action.user.id)
+      const users = exists ? state.users.map((u) => (u.id === action.user.id ? action.user : u)) : [...state.users, action.user]
+      // Editing the logged-in user's campus re-applies campus scoping straight away.
+      const campus = action.user.id === state.currentUserId ? action.user.campus : state.campus
+      return { ...state, users, campus }
+    }
+
     case 'LOGOUT':
       return { ...state, currentUserId: null, campus: 'ALL' }
 

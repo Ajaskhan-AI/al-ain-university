@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import { FlaskConical, Pencil, RotateCcw, SlidersHorizontal, Users } from 'lucide-react'
+import { FlaskConical, Pencil, RotateCcw, SlidersHorizontal } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { Link, useSearchParams } from 'react-router'
 import { can } from '../../auth/permissions'
@@ -9,7 +9,6 @@ import { FaultControls } from '../../components/smdb/FaultControls'
 import { SmdbStatusBadge } from '../../components/smdb/SmdbBits'
 import { Button } from '../../components/ui/Button'
 import { Card } from '../../components/ui/Card'
-import { ComingSoon } from '../../components/ui/ComingSoon'
 import { PageHeader } from '../../components/ui/PageHeader'
 import { inputClass } from '../../components/ui/styles'
 import { useToast } from '../../components/ui/toastContext'
@@ -20,6 +19,7 @@ import { useSimulator } from '../../sim/simulatorContext'
 import { actions } from '../../store/actions'
 import { useAppDispatch, useAppState } from '../../store/hooks'
 import type { Smdb, SmdbThresholds } from '../../types'
+import { UsersSection } from './UsersSection'
 
 export default function SettingsPage() {
   const user = useCurrentUser()
@@ -31,7 +31,7 @@ export default function SettingsPage() {
 
   return (
     <>
-      <PageHeader title="Settings" description="Alarm thresholds, demo tools and user management." />
+      <PageHeader title="Settings" description="Alarm thresholds, users & roles, and demo tools." />
       <div className="space-y-6">
         {canEdit && (
           <Card
@@ -79,17 +79,7 @@ export default function SettingsPage() {
           </Card>
         )}
 
-        {(can(user, 'users.view') || can(user, 'users.manage')) && (
-          <Card
-            title={
-              <span className="flex items-center gap-2">
-                <Users className="size-5 text-navy-600" aria-hidden /> Users & roles
-              </span>
-            }
-          >
-            <ComingSoon step={11} features={[`List users, ${can(user, 'users.manage') ? 'change role / campus, add a demo user' : 'view only for your role'}`]} />
-          </Card>
-        )}
+        {(can(user, 'users.view') || can(user, 'users.manage')) && <UsersSection />}
 
         {can(user, 'demo.reset') && (
           <Card title="Demo data" subtitle="Restore the original sample data. Everything created during the demo is removed and you are logged out.">

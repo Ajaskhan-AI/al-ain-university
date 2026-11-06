@@ -183,6 +183,7 @@ export function SimulatorProvider({ children }: { children: ReactNode }) {
   }, [assessments, state.alerts, state.assets, dispatch, toast, canSeePredictive])
 
   // ---------- Demo faults ----------
+
   const injectFault = useCallback(
     (smdbId: string, type: FaultType) => {
       faultsRef.current = { ...faultsRef.current, [smdbId]: type }
@@ -202,9 +203,16 @@ export function SimulatorProvider({ children }: { children: ReactNode }) {
     [tick],
   )
 
+  /** Used by "Reset demo data": remove every simulated fault and refresh readings at once. */
+  const clearAllFaults = useCallback(() => {
+    faultsRef.current = {}
+    setFaults({})
+    tick()
+  }, [tick])
+
   const value = useMemo<SimulatorValue>(
-    () => ({ readings, health, history, faults, injectFault, clearFault, updatedAt, intervalMs: INTERVAL_MS }),
-    [readings, health, history, faults, injectFault, clearFault, updatedAt],
+    () => ({ readings, health, history, faults, injectFault, clearFault, clearAllFaults, updatedAt, intervalMs: INTERVAL_MS }),
+    [readings, health, history, faults, injectFault, clearFault, clearAllFaults, updatedAt],
   )
 
   return <SimulatorContext.Provider value={value}>{children}</SimulatorContext.Provider>

@@ -1,9 +1,11 @@
 import clsx from 'clsx'
 import { MapPin, RotateCcw } from 'lucide-react'
+import { Suspense } from 'react'
 import { NavLink, Outlet } from 'react-router'
 import { canAny } from '../../auth/permissions'
 import { useCurrentUser } from '../../auth/useCurrentUser'
 import { CAMPUS_FILTER_LABELS } from '../../data/campuses'
+import { PageLoader } from '../ui/PageLoader'
 import { MOBILE_NAV_ITEMS } from './navItems'
 import { RoleSwitcher } from './RoleSwitcher'
 import { SampleBadge } from './SampleBadge'
@@ -53,7 +55,9 @@ export function MobileShell() {
         </header>
 
         <main className="flex-1 px-4 pt-5 pb-24">
-          <Outlet />
+          <Suspense fallback={<PageLoader />}>
+            <Outlet />
+          </Suspense>
         </main>
 
         <nav className="fixed inset-x-0 bottom-0 z-20 mx-auto flex max-w-lg border-t border-navy-100 bg-white">

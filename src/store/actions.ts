@@ -15,6 +15,7 @@ import type {
   TicketCategory,
   TicketPriority,
   TicketSource,
+  User,
 } from '../types'
 import type { AppData } from './state'
 
@@ -28,6 +29,7 @@ export type Action =
   | { type: 'SET_CAMPUS'; campus: CampusFilter }
   | { type: 'LOGIN'; userId: string }
   | { type: 'LOGOUT' }
+  | { type: 'SAVE_USER'; user: User }
   // Module 4 — complaints & work orders
   | { type: 'CREATE_TICKET'; ticket: Ticket }
   | { type: 'ASSIGN_TICKET'; ticketId: string; technicianId: string; by: Actor; at: string }
@@ -113,6 +115,10 @@ export const actions = {
   },
   logout(): Action {
     return { type: 'LOGOUT' }
+  },
+  /** Users & Roles: add a demo user or update one (matched by id). */
+  saveUser(user: User): Action {
+    return { type: 'SAVE_USER', user }
   },
 
   createTicket(input: NewTicketInput): Action {

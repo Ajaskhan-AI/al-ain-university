@@ -1,0 +1,8 @@
+# Netlify: connect the GitHub repo (or drag the dist/ folder onto app.netlify.com/drop).
+# No redirect rules are needed — the app uses hash URLs (/#/page).
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
