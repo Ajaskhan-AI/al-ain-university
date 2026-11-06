@@ -1,5 +1,5 @@
 import { format } from 'date-fns'
-import { ArrowLeft, Boxes, CircleCheck, Gauge, History, MapPin, Plus } from 'lucide-react'
+import { ArrowLeft, Boxes, CircleCheck, Download, Gauge, History, MapPin, Plus } from 'lucide-react'
 import { QRCodeSVG } from 'qrcode.react'
 import { useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router'
@@ -24,7 +24,7 @@ import AccessRestrictedPage from '../AccessRestrictedPage'
 /** What a QR tag opens: asset details, its checklist, open tasks and the full maintenance log. */
 export default function AssetPage() {
   const { assetId } = useParams()
-  const { assets, ppmTasks, tickets } = useAppState()
+  const { assets, ppmTasks, tickets, technicians } = useAppState()
   const user = useCurrentUser()
   const navigate = useNavigate()
   const toast = useToast()
@@ -55,6 +55,11 @@ export default function AssetPage() {
     .sort((a, b) => (b.completion?.at ?? '').localeCompare(a.completion?.at ?? ''))
   const workOrders = tickets.filter((t) => t.assetId === asset.id || (asset.smdbId && t.smdbId === asset.smdbId))
   const overdue = open.filter((t) => getPpmStatus(t, today) === 'overdue').length
+  const downloadHistory = async () => {
+    // Loaded on demand so the PDF library isn't part of the initial app download.
+    const { downloadAssetHistoryPdf } = await import('../../pdf/assetHistoryPdf')
+    toast.show(`Downloaded ${downloadAssetHistoryPdf(asset, tasks, technicians)}`)
+  }
   const qrValue = `${window.location.origin}${window.location.pathname}#/ppm/assets/${asset.id}`
 
   return (
@@ -81,12 +86,18 @@ export default function AssetPage() {
             </p>
           </div>
         </div>
-        {can(user, 'ppm.manage') && (
-          <Button variant="teal" onClick={() => setShowAddTask(true)}>
-            <Plus className="size-4" aria-hidden />
-            Add PPM task
+        <div className="flex flex-wrap gap-2">
+          <Button variant="secondary" onClick={downloadHistory}>
+            <Download className="size-4" aria-hidden />
+            History PDF
           </Button>
-        )}
+          {can(user, 'ppm.manage') && (
+            <Button variant="teal" onClick={() => setShowAddTask(true)}>
+              <Plus className="size-4" aria-hidden />
+              Add PPM task
+            </Button>
+          )}
+        </div>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">

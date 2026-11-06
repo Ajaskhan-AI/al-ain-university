@@ -1,4 +1,4 @@
-import { ArrowLeft, Camera, CircleCheck, MapPin, MessageSquare, Phone, Play, User, UserPlus } from 'lucide-react'
+import { ArrowLeft, Camera, CircleCheck, Download, MapPin, MessageSquare, Phone, Play, User, UserPlus } from 'lucide-react'
 import { useState, type ReactNode } from 'react'
 import { Link, useParams } from 'react-router'
 import { can } from '../../auth/permissions'
@@ -103,6 +103,12 @@ export default function TicketDetailPage() {
     setNote('')
   }
 
+  const downloadPdf = async () => {
+    // Loaded on demand so the PDF library isn't part of the initial app download.
+    const { downloadTicketPdf } = await import('../../pdf/ticketPdf')
+    toast.show(`Downloaded ${downloadTicketPdf(ticket, rooms, technicians)}`)
+  }
+
   return (
     <>
       <Link to={backTo} className="inline-flex items-center gap-1.5 text-sm font-medium text-navy-500 hover:text-navy-800">
@@ -123,6 +129,10 @@ export default function TicketDetailPage() {
             {ticket.roomId && <span className="text-navy-400">· {ticket.roomId}</span>}
           </p>
         </div>
+        <Button variant="secondary" onClick={downloadPdf}>
+          <Download className="size-4" aria-hidden />
+          Download PDF
+        </Button>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
