@@ -1,6 +1,8 @@
 import clsx from 'clsx'
 import { Building2, X } from 'lucide-react'
 import { NavLink } from 'react-router'
+import { canAny } from '../../auth/permissions'
+import { useCurrentUser } from '../../auth/useCurrentUser'
 import { NAV_ITEMS } from './navItems'
 
 interface Props {
@@ -10,6 +12,10 @@ interface Props {
 }
 
 export function Sidebar({ mobileOpen, onClose }: Props) {
+  const user = useCurrentUser()
+  // Only show modules this role can open (same permission lists as the routes).
+  const items = NAV_ITEMS.filter((item) => canAny(user, item.access))
+
   return (
     <>
       {/* Dark backdrop behind the sidebar on phones/tablets */}
@@ -47,7 +53,7 @@ export function Sidebar({ mobileOpen, onClose }: Props) {
         </div>
 
         <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-4">
-          {NAV_ITEMS.map(({ path, label, icon: Icon }) => (
+          {items.map(({ path, label, icon: Icon }) => (
             <NavLink
               key={path}
               to={path}

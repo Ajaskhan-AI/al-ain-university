@@ -1,24 +1,22 @@
 import { useState } from 'react'
 import { Outlet } from 'react-router'
+import { useCurrentUser } from '../../auth/useCurrentUser'
 import { actions } from '../../store/actions'
 import { useAppDispatch, useAppState } from '../../store/hooks'
 import { Sidebar } from './Sidebar'
 import { TopBar } from './TopBar'
+import { useResetDemo } from './useResetDemo'
 
 /**
- * The frame around every logged-in page: sidebar + top bar + page content.
- * <Outlet /> is where React Router renders the current page.
+ * Desktop frame around every logged-in page (all roles except Technician):
+ * sidebar + top bar + page content. <Outlet /> is where the current page renders.
  */
 export function AppShell() {
   const { campus } = useAppState()
+  const user = useCurrentUser()
   const dispatch = useAppDispatch()
+  const resetDemo = useResetDemo()
   const [menuOpen, setMenuOpen] = useState(false)
-
-  const handleReset = () => {
-    if (window.confirm('Reset all demo data to the original sample data?')) {
-      dispatch(actions.resetDemo())
-    }
-  }
 
   return (
     <div className="flex h-screen overflow-hidden">
@@ -27,9 +25,10 @@ export function AppShell() {
       <div className="flex min-w-0 flex-1 flex-col overflow-y-auto">
         <TopBar
           campus={campus}
+          campusLocked={!!user && user.campus !== 'ALL'}
           onCampusChange={(value) => dispatch(actions.setCampus(value))}
           onOpenMenu={() => setMenuOpen(true)}
-          onReset={handleReset}
+          onReset={resetDemo}
         />
         <main className="flex-1 px-4 py-6 sm:px-6 lg:px-8">
           <Outlet />

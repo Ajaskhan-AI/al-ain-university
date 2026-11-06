@@ -1,17 +1,20 @@
 import { Menu, RotateCcw } from 'lucide-react'
 import type { CampusFilter } from '../../types'
 import { CampusSwitcher } from './CampusSwitcher'
+import { RoleSwitcher } from './RoleSwitcher'
 import { SampleBadge } from './SampleBadge'
 
 interface Props {
   campus: CampusFilter
+  /** True for single-campus users: campus is shown but cannot be changed. */
+  campusLocked: boolean
   onCampusChange: (value: CampusFilter) => void
   onOpenMenu: () => void
   /** Presenter control: restore the original sample data. */
   onReset: () => void
 }
 
-export function TopBar({ campus, onCampusChange, onOpenMenu, onReset }: Props) {
+export function TopBar({ campus, campusLocked, onCampusChange, onOpenMenu, onReset }: Props) {
   return (
     <header className="sticky top-0 z-20 border-b border-navy-100 bg-white/95 backdrop-blur">
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3 sm:px-6">
@@ -37,16 +40,18 @@ export function TopBar({ campus, onCampusChange, onOpenMenu, onReset }: Props) {
           <div className="hidden md:block">
             <SampleBadge />
           </div>
-          <CampusSwitcher value={campus} onChange={onCampusChange} />
+          <CampusSwitcher value={campus} onChange={onCampusChange} locked={campusLocked} />
           <button
             type="button"
             onClick={onReset}
             title="Reset demo data"
+            aria-label="Reset demo data"
             className="inline-flex items-center gap-1.5 rounded-lg border border-navy-200 px-3 py-1.5 text-sm font-medium text-navy-600 hover:bg-navy-50"
           >
             <RotateCcw className="size-4" aria-hidden />
-            <span className="hidden xl:inline">Reset demo data</span>
+            <span className="hidden 2xl:inline">Reset demo data</span>
           </button>
+          <RoleSwitcher />
         </div>
       </div>
 

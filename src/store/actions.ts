@@ -10,6 +10,8 @@ import type { AppData } from './state'
 export type Action =
   | { type: 'RESET_DEMO'; data: AppData; at: string }
   | { type: 'SET_CAMPUS'; campus: CampusFilter }
+  | { type: 'LOGIN'; userId: string }
+  | { type: 'LOGOUT' }
 
 /** Action creators: small helpers so components don't build action objects by hand. */
 export const actions = {
@@ -20,5 +22,12 @@ export const actions = {
   },
   setCampus(campus: CampusFilter): Action {
     return { type: 'SET_CAMPUS', campus }
+  },
+  /** Demo login: no password, just pick a user (also used by "Switch role"). */
+  login(userId: string): Action {
+    return { type: 'LOGIN', userId }
+  },
+  logout(): Action {
+    return { type: 'LOGOUT' }
   },
 }
