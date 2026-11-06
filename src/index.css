@@ -1,0 +1,39 @@
+@import "tailwindcss";
+
+/*
+  Design tokens. Tailwind v4 turns each --color-* variable into utility
+  classes automatically, e.g. --color-navy-900 → bg-navy-900, text-navy-900.
+  Teal and amber come from Tailwind's built-in palette.
+*/
+@theme {
+  --font-sans: "Inter", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+
+  --color-navy-50: #f2f5fb;
+  --color-navy-100: #e3eaf5;
+  --color-navy-200: #c3d1e8;
+  --color-navy-300: #94acd4;
+  --color-navy-400: #5f80b8;
+  --color-navy-500: #3d5f9c;
+  --color-navy-600: #2a4a82;
+  --color-navy-700: #1f3a69;
+  --color-navy-800: #172d53;
+  --color-navy-900: #10213f;
+  --color-navy-950: #0a162b;
+
+  /* Status colours: green = normal/ok, amber = warning/due, red = alert/overdue */
+  --color-ok: #16a34a;
+  --color-ok-soft: #dcfce7;
+  --color-warn: #d97706;
+  --color-warn-soft: #fef3c7;
+  --color-alert: #dc2626;
+  --color-alert-soft: #fee2e2;
+}
+
+@layer base {
+  html {
+    @apply bg-navy-50 text-navy-900 antialiased;
+  }
+  body {
+    @apply min-h-screen;
+  }
+}
