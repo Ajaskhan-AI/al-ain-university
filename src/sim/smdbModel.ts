@@ -183,6 +183,19 @@ export function buildHistory(smdb: Smdb, now: Date, calendar: AcademicPeriod[]):
   return points
 }
 
+/**
+ * Energy used by a board between two moments (kWh), integrating the load
+ * model in 15-minute steps. Used for "today's kWh so far" on the Overview.
+ */
+export function energyBetween(smdb: Smdb, from: Date, to: Date, calendar: AcademicPeriod[]): number {
+  let kWh = 0
+  for (let t = from.getTime(); t < to.getTime(); t += 900_000) {
+    const stepHours = Math.min(900_000, to.getTime() - t) / 3_600_000
+    kWh += expectedKw(smdb, new Date(t + 450_000), calendar) * stepHours
+  }
+  return kWh
+}
+
 function round(value: number, digits: number): number {
   const f = 10 ** digits
   return Math.round(value * f) / f
